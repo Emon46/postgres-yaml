@@ -1,0 +1,19 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Postgres
+metadata:
+  name: hot-postgres-9
+  namespace: demo
+spec:
+  version: "9.6.20"
+  replicas: 3
+  standbyMode: Hot
+  storageType: Durable
+  storage:
+    storageClassName: "standard"
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  terminationPolicy: WipeOut
+

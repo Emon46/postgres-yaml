@@ -1,0 +1,37 @@
+{
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+        "annotations": {
+            "status": "{"conn_url":"postgres://10.244.0.9:5432/postgres",
+			"api_url":"http://10.244.0.9:8008/patroni",
+			"state":"running",
+			"role":"master",
+			"version":"1.6.5",
+			"xlog_location":620757264,
+			"timeline":6
+			}"
+        },
+        "creationTimestamp": "2020-09-29T06:36:39Z",
+        "generateName": "acid-minimal-cluster-",
+        "labels": {
+            "application": "spilo",
+            "cluster-name": "acid-minimal-cluster",
+            "controller-revision-hash": "acid-minimal-cluster-66699664",
+            "spilo-role": "master",
+            "statefulset.kubernetes.io/pod-name": "acid-minimal-cluster-2",
+            "team": "acid"
+        }, 
+        
+        "hostIP": "172.18.0.2",
+        "phase": "Running",
+        "podIP": "10.244.0.9",
+        "podIPs": [
+            {
+                "ip": "10.244.0.9"
+            }
+        ],
+        "qosClass": "Burstable",
+        "startTime": "2020-09-29T06:36:42Z"
+    }
+}

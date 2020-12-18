@@ -1,0 +1,47 @@
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy
+  namespace: demo
+spec:
+  podSelector:
+    matchLabels:
+      kubedb.com/podname: hot-postgres-0
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          kubedb.com/podname: hot-postgres-1
+  #   - ipBlock:
+  #       cidr:   192.168.0.0/16  
+  #       except:
+  #       - 192.168.162.0/24
+  #       - 192.168.110.0/24
+  #   ports:
+  #   - protocol: TCP
+  #     port: 5432
+  #   - protocol: TCP
+  #     port: 12345
+  #   - protocol: TCP
+  #     port: 12380
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          kubedb.com/podname: hot-postgres-1
+    # - ipBlock:
+    #     cidr:   192.168.0.0/16  
+    #     except:
+    #     - 192.168.162.0/24
+    #     - 192.168.110.0/24
+  #   ports:
+  #   - protocol: TCP
+  #     port: 5432
+  #   - protocol: TCP
+  #     port: 12345
+  #   - protocol: TCP
+  #     port: 12380

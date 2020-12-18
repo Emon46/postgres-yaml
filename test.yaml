@@ -1,0 +1,81 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: demo
+spec:
+  podSelector: 
+    matchLabels:
+      kubedb.com/kind: Postgres
+      kubedb.com/name: hot-postgres
+  policyTypes:
+  - Ingress
+  - Egress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          component: kube-apiserver
+          tier: control-plane
+  - to:
+    - ipBlock:
+        cidr:   10.96.0.1/32  
+    ports:
+    - protocol: TCP
+      port: 443
+    # - protocol: TCP
+    #   port: 12345
+    # - protocol: TCP
+    #   port: 12380
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: primary-to-pod1-allow
+  namespace: demo
+spec:
+  podSelector: 
+    matchLabels:
+      kubedb.com/kind: Postgres
+      kubedb.com/name: hot-postgres
+      kubedb.com/role: primary
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          statefulset.kubernetes.io/pod-name: hot-postgres-1
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          statefulset.kubernetes.io/pod-name: hot-postgres-1
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pod1-to-primary-allow
+  namespace: demo
+spec:
+  podSelector: 
+    matchLabels:
+      kubedb.com/kind: Postgres
+      kubedb.com/name: hot-postgres
+      statefulset.kubernetes.io/pod-name: hot-postgres-1
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          statefulset.kubernetes.io/pod-name: hot-postgres-0
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          statefulset.kubernetes.io/pod-name: hot-postgres-0
+---

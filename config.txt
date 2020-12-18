@@ -1,0 +1,61 @@
+{
+    "apiVersion": "v1",
+    "kind": "Endpoints",
+    "metadata": {
+        "annotations": {
+            "config": "{
+			"loop_wait":10,
+			"maximum_lag_on_failover":33554432,
+			"postgresql\":{	
+					"parameters":{
+							"archive_mode\":\"on\",
+							"archive_timeout\":\"1800s\",
+							"autovacuum_analyze_scale_factor\":0.02,
+							"autovacuum_max_workers\":5,
+							"autovacuum_vacuum_scale_factor\":0.05,
+							"checkpoint_completion_target\":0.9,
+							"hot_standby\":\"on\",
+							"log_autovacuum_min_duration\":0,
+							"log_checkpoints\":\"on\",
+							"log_connections\":\"on\",
+							"log_disconnections\":\"on\",
+							"log_line_prefix\":\"%t [%p]: [%l-1] %c %x %d %u %a %h \",
+							"log_lock_waits":\"on\",
+							"log_min_duration_statement":500,
+							"log_statement":\"ddl\",
+							"log_temp_files":0,
+							"max_connections":100,\
+							"max_replication_slots":10,\
+							"max_wal_senders":10,\
+							"tcp_keepalives_idle\":900,\
+							"tcp_keepalives_interval\":100,\
+							"track_functions\":\"all\",\
+							"wal_keep_segments\":8,\
+							"wal_level\":\"hot_standby\",\
+							"wal_log_hints\":\"on\"
+							},
+						"use_pg_rewind\":true,
+						"use_slots\":true},
+						"retry_timeout\":10,
+						"ttl\":30
+					}",
+            		"history": "[
+					[1,84285168,\"no recovery target specified\",\"2020-09-29T06:40:14+00:00\"],
+					[2,150995272,\"no recovery target specified\",\"2020-09-29T06:56:56+00:00\"],
+					[3,234889416,\"no recovery target specified\",\"2020-09-29T08:34:17+00:00\"],
+					[4,236078328,\"no recovery target specified\",\"2020-09-29T08:36:58+00:00\"],
+					[5,419430560,\"no recovery target specified\",\"2020-09-30T03:38:42+00:00\"]]",
+           		"initialize": "6877794841227100230"
+        },
+        "creationTimestamp": "2020-09-29T06:36:39Z",
+        "labels": {
+            "application": "spilo",
+            "cluster-name": "acid-minimal-cluster"
+        },
+        "name": "acid-minimal-cluster-config",
+        "namespace": "default",
+        "resourceVersion": "566998",
+        "selfLink": "/api/v1/namespaces/default/endpoints/acid-minimal-cluster-config",
+        "uid": "509a0791-8886-4998-994e-f4861c66856a"
+    }
+}

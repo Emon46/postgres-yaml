@@ -1,0 +1,23 @@
+apiVersion: kubedb.com/v1alpha2
+kind: Postgres
+metadata:
+  name: hot-postgres
+  namespace: demo
+spec:
+  version: "12.4"
+  replicas: 3
+  standbyMode: Hot
+  storageType: Durable
+  tls:
+    issuerRef:
+      apiGroup: cert-manager.io
+      name: postgres-ca-issuer
+      kind: Issuer
+  storage:
+    storageClassName: "standard"
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  terminationPolicy: WipeOut

@@ -1,0 +1,42 @@
+{
+    "apiVersion": "v1",
+    "kind": "Endpoints",
+    "metadata": {
+        "annotations": {
+            "acquireTime": "2020-09-29T08:36:58.288647+00:00",
+            "leader": "acid-minimal-cluster-2",
+            "optime": "620757264",
+            "renewTime": "2020-09-30T09:44:13.342436+00:00",
+            "transitions": "4",
+            "ttl": "30"
+        },
+        "creationTimestamp": "2020-09-29T06:29:19Z",
+        "labels": {
+            "application": "spilo",
+            "cluster-name": "acid-minimal-cluster",
+            "spilo-role": "master",
+            "team": "acid"
+        },
+        "name": "acid-minimal-cluster",
+        "namespace": "default",
+        "resourceVersion": "639399",
+        "selfLink": "/api/v1/namespaces/default/endpoints/acid-minimal-cluster",
+        "uid": "340f0471-6635-4e11-9f0c-9c9256c8f161"
+    },
+    "subsets": [
+        {
+            "addresses": [
+                {
+                    "ip": "10.244.0.9"
+                }
+            ],
+            "ports": [
+                {
+                    "name": "postgresql",
+                    "port": 5432,
+                    "protocol": "TCP"
+                }
+            ]
+        }
+    ]
+}
