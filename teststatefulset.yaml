@@ -5,10 +5,11 @@ metadata:
   labels:
     app: nginx
 spec:
+  type: NodePort
   ports:
-  - port: 80
+  - port: 8080
+    targetPort: 80
     name: web
-  clusterIP: None
   selector:
     app: nginx
 ---
@@ -33,25 +34,4 @@ spec:
         ports:
         - containerPort: 80
           name: web
-        volumeMounts:
-        - name: html
-          mountPath: /usr/share/nginx/html
-      - name: debian
-        image: debian
-        command: ["/bin/sh", "-c"]
-        args:
-        - while false; do
-            date >> /html/index.html;
-            sleep 1;
-          done
-        volumeMounts:
-        - name: html
-          mountPath: /html
-  volumeClaimTemplates:
-  - metadata:
-      name: html
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
+        

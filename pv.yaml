@@ -1,0 +1,167 @@
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: pv01-3gi
+#   labels:
+#     env: prod
+# spec:
+#   capacity:
+#     storage: 5Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   storageClassName: standard
+#   volumeMode: Filesystem
+#   nfs: 
+#     path: /opt/nfs 
+#     server: nfs.f22 
+#     readOnly: false
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: external-service
+#   namespace: default
+# spec:
+#   selector:
+#     app: devwebapp
+#   ports:
+#   - protocol: TCP
+#     port: 8200
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: devwebapp
+#   labels:
+#     app: devwebapp
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: devwebapp
+#   template:
+#     metadata:
+#       labels:
+#         app: devwebapp
+#     spec:
+#       serviceAccountName: internal-app
+#       containers:
+#       - name: app
+#         image: app:k8s
+#         imagePullPolicy: Always
+#         ports:
+#         - containerPort: 8200
+#         env:
+#         - name: ADDRESS
+#           value: external-service:8200
+
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: frontend-deployment
+#   labels:
+#     app: frontend
+# spec:
+#   replicas: 2
+#   selector:
+#     matchLabels:
+#       app: frontend
+#   template:
+#     metadata:
+#       labels:
+#         app: frontend
+#     spec:
+#       containers:
+#       - name: frontend
+#         image: nginx:1.16
+#         ports:
+#         - containerPort: 80
+
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: frontend-service
+# spec:
+#   selector:
+#     app: frontend
+#   ports:
+#     - protocol: TCP
+#       port: 80
+#       targetPort: 80
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-mysql
+  labels:
+    app: wordpress
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: wordpress
+    tier: mysql
+  clusterIP: None
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: mysql-pv-claim
+#   labels:
+#     app: wordpress
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 20Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wordpress-mysql
+  labels:
+    app: wordpress
+spec:
+  serviceName: wordpress-mysql
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: mysql
+
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-pv-claim
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-pv-claim
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 20Gi

@@ -1,13 +1,24 @@
-apiVersion: kubedb.com/v1alpha1
+apiVersion: kubedb.com/v1alpha2
 kind: Postgres
 metadata:
-  name: hot-postgres-old
+  name: demo-pg
   namespace: demo
 spec:
-  version: "11.1"
+  # version: "13.1"
+  # version: "12.5"
+  version: "11.10"
+  # version: "10.15"
+  # version: "9.6.20"
   replicas: 3
   standbyMode: Hot
+  clientAuthMode: cert
+  sslMode: verify-full
   storageType: Durable
+  tls:
+    issuerRef:
+      apiGroup: cert-manager.io
+      name: postgres-ca-issuer
+      kind: Issuer
   storage:
     storageClassName: "standard"
     accessModes:
@@ -16,3 +27,14 @@ spec:
       requests:
         storage: 1Gi
   terminationPolicy: WipeOut
+  init:
+    waitForInitialRestore: true
+  podTemplate: 
+    spec: 
+      resources:
+        limits:
+          cpu: 250m
+          memory: 1Gi
+        requests:
+          cpu: 250m
+          memory: 1Gi

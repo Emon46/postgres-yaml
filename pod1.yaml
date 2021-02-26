@@ -1,0 +1,124 @@
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: mypod
+# spec:
+#   containers:
+#     - name: myfrontend
+#       image: nginx
+#       volumeMounts:
+#       - mountPath: /test-pd
+#         name: mypd
+#       - mountPath: /test-pd1
+#         name: mypd
+#   volumes:
+#     - name: mypd
+#       persistentVolumeClaim:
+#         claimName: myclaim
+#     # - name: mypd1
+#     #   persistentVolumeClaim:
+#     #     claimName: myclaim
+
+# # ---
+
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: mypod1
+# spec:
+#   containers:
+#     - name: myfrontend
+#       image: nginx
+#       volumeMounts:
+#       - mountPath: /test-pd
+#         name: mypd
+#       - mountPath: /test-pd1
+#         name: mypd
+#   volumes:
+#     - name: mypd
+#       persistentVolumeClaim:
+#         claimName: myclaim
+
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: pv-gce
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   capacity:
+#     storage:  10Gi
+#   storageClassName: manual
+#   hostPath:
+#     path: "/opt/volume/nginx"
+---
+
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: myclaim
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage:  10Gi
+#   storageClassName: standard
+
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: pv-gce
+#   labels:
+#     app: test 
+# spec:
+#   claimRef:
+#     apiVersion: v1
+#     kind: PersistentVolumeClaim
+#     name: myclaim
+#   accessModes:
+#     - ReadWriteOnce
+#   capacity:
+#     storage:  200Gi
+#   storageClassName: fast
+#   gcePersistentDisk:
+#     pdName: msales-kubernetes-disk
+#     fsType: ext4
+#   nodeAffinity:
+#     required:
+#       nodeSelectorTerms:
+#       - matchExpressions:
+#         - key: topology.kubernetes.io/zone
+#           operator: In
+#           values:
+#           - australia-southeast1-a
+#         - key: topology.kubernetes.io/region
+#           operator: In
+#           values:
+#           - australia-southeast1
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: frontend
+#   labels:
+#     app: guestbook
+#     tier: frontend
+# spec:
+#   # modify replicas according to your case
+#   replicas: 3
+#   selector:
+#     matchLabels:
+#       tier: frontend
+#   template:
+#     metadata:
+#       labels:
+#         tier: frontend
+#         tier2: frontend2
+#     spec:
+#       containers:
+#       - name: php-redis
+#         image: nginx:1.16.1
